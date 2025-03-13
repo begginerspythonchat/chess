@@ -5,7 +5,6 @@ from tkinter import ttk
 class ChessField(ttk.Label):
 
     UNICODE_FIGURES = {
-        None: "\u2003",
         "white pawn": "♙",
         "white knight": "♘",
         "white bishop": "♗",
@@ -18,6 +17,7 @@ class ChessField(ttk.Label):
         "black rook": "♜",
         "black queen": "♛",
         "black king": "♚",
+        None: "\u2003",
     }
 
     def __init__(self, *args, **kwargs):
@@ -35,6 +35,19 @@ class ChessField(ttk.Label):
 
 
 if __name__ == '__main__':
-    cf = ChessField(font="default 50")
-    cf.figure = "black pawn"
-    cf.pack()
+    root = tkinter.Tk()
+    row = column = switcher = 0
+    for figure in ChessField.UNICODE_FIGURES:
+        if column == 6:
+            row += 1
+            switcher ^= 1
+            column = 0
+        if not switcher:
+            background = "grey"
+        else:
+            background = "white"
+        cf = ChessField(root, font="Arial 50", background=background)
+        cf.figure = figure
+        cf.grid(in_=root, row=row, column=column)
+        column += 1
+        switcher ^= 1
