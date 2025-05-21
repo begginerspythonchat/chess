@@ -34,6 +34,10 @@ class ChessBoard(ttk.Frame):
                 white_black_switcher ^= 1
             white_black_switcher ^= 1
 
+    def update(self, figures):
+        for field, figure in zip(self.fields, figures):
+            field.figure = figure
+
 
 class ChessField(ttk.Label):
 
@@ -71,3 +75,4 @@ if __name__ == "__main__":
     root = tkinter.Tk()
     chess_board = ChessBoard(root)
     chess_board.pack(in_=root, fill="both", expand=True)
+    chess_board.update(ChessField.UNICODE_FIGURES)
