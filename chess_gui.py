@@ -29,10 +29,19 @@ class ChessBoard(ttk.Frame):
                 else:
                     background = "white"
                 field = ChessField(root, font=font, background=background)
+                field.bind("<ButtonRelease>", self.touch_figure)
                 field.grid(in_=self, row=ir, column=ic, sticky="nesw")
                 self.fields.append(field)
                 white_black_switcher ^= 1
             white_black_switcher ^= 1
+
+    def touch_figure(self, event):
+        if event.widget.was_touched:
+            event.widget["foreground"] = "black"
+            event.widget.was_touched = False
+            return
+        event.widget["foreground"] = "green"
+        event.widget.was_touched = True
 
     def update(self, figures):
         for field, figure in zip(self.fields, figures):
@@ -60,6 +69,7 @@ class ChessField(ttk.Label):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.figure = None
+        self.was_touched = False
 
     @property
     def figure(self):
