@@ -1,7 +1,37 @@
+import itertools
+
 import tkinter
 from tkinter import ttk
 
+from chess_console import Game
 from functions import get_cordinats
+
+
+class GameFrame(ttk.Frame):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.chess_board = ChessBoard()
+        self.chess_board.pack()
+        self.game = Game()
+        self.update()
+        self.chess_board.make_move = self.make_move
+
+    def update(self):
+        fields = itertools.chain.from_iterable(self.game.chess_board.matrix)
+        figure_names = []
+        for field in fields:
+            figure = field.figure
+            figure_name = (figure.color + " " + figure.name).lower() \
+                if figure else figure
+            figure_names.append(figure_name)
+        self.chess_board.update(figure_names)
+
+    def make_move(self, string):
+        print("make_move", string)
+        self.game.commit_game_move(string)
+        self.game.update()
+        self.update()
 
 
 class ChessBoard(ttk.Frame):
@@ -11,6 +41,7 @@ class ChessBoard(ttk.Frame):
         self.fields = []
         self.last_field = None
         # клетка шахматной доски последней затронутой фигуры
+        # self.make_move    # функция для отправки хода в игру
         font = ("fixed", 30, "normal")
         font_for_coords = 15
         background_coords = "#999999"
@@ -47,6 +78,7 @@ class ChessBoard(ttk.Frame):
                 white_black_switcher ^= 1
             white_black_switcher ^= 1
 
+
     def touch_figure(self, event):
         field = event.widget
         # предыдущая клетка не выбранна, а текущая пуста
@@ -81,10 +113,13 @@ class ChessBoard(ttk.Frame):
             coords_2 = "".join((get_cordinats(
                     grid_info_2["row"] - 1,
                     grid_info_2["column"] - 1)))
-            print("coords_1, coords_2,", coords_1, coords_2)
             self.last_field["foreground"] = field["foreground"] = "black"
             self.last_field.was_touched = field.was_touched = False
             self.last_field = None
+            try:
+                self.make_move(coords_1 + " " + coords_2)
+            except AttributeError:
+                raise
         else:
             self.last_field = field
 
@@ -128,6 +163,5 @@ class ChessField(ttk.Label):
 
 if __name__ == "__main__":
     root = tkinter.Tk()
-    chess_board = ChessBoard(root)
-    chess_board.pack(in_=root, fill="both", expand=True)
-    chess_board.update(ChessField.UNICODE_FIGURES)
+    game_frame = GameFrame(root)
+    game_frame.pack()
