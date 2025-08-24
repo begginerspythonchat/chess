@@ -1,12 +1,16 @@
 import tkinter
 from tkinter import ttk
 
+from functions import get_cordinats
+
 
 class ChessBoard(ttk.Frame):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields = []
+        self.last_field = None
+        # клетка шахматной доски последней затронутой фигуры
         font = ("fixed", 30, "normal")
         white_black_switcher = 0
         for ir, row in enumerate(" 87654321 "):
@@ -36,12 +40,37 @@ class ChessBoard(ttk.Frame):
             white_black_switcher ^= 1
 
     def touch_figure(self, event):
-        if event.widget.was_touched:
-            event.widget["foreground"] = "black"
-            event.widget.was_touched = False
+        field = event.widget
+        # предыдущая клетка не выбранна, а текущая пуста
+        if None == self.last_field == field.figure:
             return
-        event.widget["foreground"] = "green"
-        event.widget.was_touched = True
+        if field.was_touched:
+            field["foreground"] = "black"
+            field.was_touched = False
+            self.last_field = None
+            return
+        field["foreground"] = "green"
+        field.was_touched = True
+        # предыдущая клетка была выбранна и не равна текущей
+        if self.last_field and self.last_field != field:
+            # находим строковые координаты по индексам
+            # индексы - 1 (так как обозначения координат шахматной доски
+            # упакованны в одном виджете с клетками шахматной доски 
+            # при помощи (.grid()))
+            grid_info_1 = self.last_field.grid_info()
+            coords_1 = "".join((get_cordinats(
+                    grid_info_1["row"] - 1,
+                    grid_info_1["column"] - 1)))
+            grid_info_2 = field.grid_info()
+            coords_2 = "".join((get_cordinats(
+                    grid_info_2["row"] - 1,
+                    grid_info_2["column"] - 1)))
+            print("coords_1, coords_2,", coords_1, coords_2)
+            self.last_field["foreground"] = field["foreground"] = "black"
+            self.last_field.was_touched = field.was_touched = False
+            self.last_field = None
+        else:
+            self.last_field = field
 
     def update(self, figures):
         for field, figure in zip(self.fields, figures):
