@@ -12,29 +12,37 @@ class ChessBoard(ttk.Frame):
         self.last_field = None
         # клетка шахматной доски последней затронутой фигуры
         font = ("fixed", 30, "normal")
+        font_for_coords = 15
+        background_coords = "#999999"
+        anchor = tkinter.CENTER
+        sticky = "nesw"
         white_black_switcher = 0
         for ir, row in enumerate(" 87654321 "):
             for ic, column in enumerate(" abcdefgh "):
                 if row == " ":
-                    ttk.Label(self, text=column, font=font).grid(
-                        row=ir, column=ic, sticky="nesw")
+                    ttk.Label(self, text=column, font=font_for_coords,
+                        anchor=anchor, background=background_coords).grid(
+                            row=ir, column=ic, sticky=sticky)
                     continue
                 elif column == " ":
-                    ttk.Label(self, text=row, font=font).grid(
-                        row=ir, column=ic, sticky="nesw")
+                    ttk.Label(self, text=row, font=font_for_coords,
+                        anchor=anchor, background=background_coords).grid(
+                            row=ir, column=ic, sticky=sticky)
                     continue
                 elif row == column == " ":
-                    ttk.Label(self, text="\u2003").grid(
-                        row=ir, column=ic, sticky="nesw")
+                    ttk.Label(self, text="\u2003",
+                        anchor=anchor, background=background_coords).grid(
+                            row=ir, column=ic, sticky=sticky)
                     continue
                 color = ["white", "black"][white_black_switcher]
                 if color == "black":
                     background = "grey"
                 else:
                     background = "white"
-                field = ChessField(root, font=font, background=background)
+                field = ChessField(root, font=font, background=background,
+                    anchor=anchor)
                 field.bind("<ButtonRelease>", self.touch_figure)
-                field.grid(in_=self, row=ir, column=ic, sticky="nesw")
+                field.grid(in_=self, row=ir, column=ic, sticky=sticky)
                 self.fields.append(field)
                 white_black_switcher ^= 1
             white_black_switcher ^= 1
