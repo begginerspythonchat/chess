@@ -49,7 +49,15 @@ class ChessBoard(ttk.Frame):
             field.was_touched = False
             self.last_field = None
             return
-        field["foreground"] = "green"
+        # Разные цвета подсветки, для лучшей видимости
+        # Замечание. Опция "background" у "обычных" виджетов (доступных
+        # через модуль tkinter) является строкой (str)
+        # у виджетов из ttk - <border object>, название цвета
+        # в поле string этого объекта
+        if field["background"].string == "grey":
+            field["foreground"] = "green3"
+        elif field["background"].string == "white":
+            field["foreground"] = "green"
         field.was_touched = True
         # предыдущая клетка была выбранна и не равна текущей
         if self.last_field and self.last_field != field:
