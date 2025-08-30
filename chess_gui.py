@@ -13,6 +13,8 @@ class GameFrame(ttk.Frame):
         super().__init__(*args, **kwargs)
         self.chess_board = ChessBoard()
         self.chess_board.pack()
+        self.label_game_info = ttk.Label()
+        self.label_game_info.pack()
         self.game = Game()
         self.update()
         self.chess_board.make_move = self.make_move
@@ -28,10 +30,15 @@ class GameFrame(ttk.Frame):
         self.chess_board.update(figure_names)
 
     def make_move(self, string):
-        print("make_move", string)
-        self.game.commit_game_move(string)
+        self.label_game_info["text"] = "your move: \"{}\"".format(string)
+        try:
+            self.game.commit_game_move(string)
+        except ValueError as msg:
+            self.label_game_info["text"] = msg
         self.game.update()
         self.update()
+        if self.game.winer:
+            self.label_game_info["text"] = self.game.winer + " won!"
 
 
 class ChessBoard(ttk.Frame):
