@@ -12,12 +12,23 @@ class GameFrame(ttk.Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.chess_board = ChessBoard()
-        self.chess_board.pack()
+        self.label_last_move = ttk.Label()
+        self.label_player_turn = ttk.Label()
         self.label_game_info = ttk.Label()
-        self.label_game_info.pack()
+        self.chess_board.pack()
+        self.label_player_turn.pack(anchor="sw")
+        self.label_last_move.pack(anchor="sw")
+        self.label_game_info.pack(anchor="sw")
         self.game = Game()
-        self.update()
+        self.start_new()
+
+    def start_new(self):
+        self.game = Game()
         self.chess_board.make_move = self.make_move
+        self.label_player_turn["text"] = self.game.player_turn + " player turn"
+        self.label_last_move["text"] = "last move: "
+        self.label_game_info["text"] = "start of game"
+        self.update()
 
     def update(self):
         fields = itertools.chain.from_iterable(self.game.chess_board.matrix)
