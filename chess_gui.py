@@ -39,6 +39,8 @@ class GameFrame(ttk.Frame):
                 if figure else figure
             figure_names.append(figure_name)
         self.chess_board.update(figure_names)
+        self.label_player_turn["text"] = self.game.player_turn + " player turn"
+        self.label_game_info["text"] = ""
 
     def make_move(self, string):
         self.label_game_info["text"] = "your move: \"{}\"".format(string)
@@ -46,10 +48,10 @@ class GameFrame(ttk.Frame):
             self.game.commit_game_move(string)
         except ValueError as msg:
             self.label_game_info["text"] = msg
-        self.game.update()
-        self.update()
-        if self.game.winer:
-            self.label_game_info["text"] = self.game.winer + " won!"
+        else:
+            self.label_last_move["text"] = "last move: " + string
+            self.game.update()
+            self.update()
 
 
 class ChessBoard(ttk.Frame):
