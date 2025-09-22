@@ -2,6 +2,7 @@ import itertools
 
 import tkinter
 from tkinter import ttk
+from tkinter import messagebox
 
 from chess_console import Game
 from functions import get_cordinats
@@ -41,9 +42,18 @@ class GameFrame(ttk.Frame):
         self.chess_board.update(figure_names)
         self.label_player_turn["text"] = self.game.player_turn + " player turn"
         self.label_game_info["text"] = ""
+        if self.game.winer:
+            self.ask_about_new_game()
+            self.chess_board.make_move = lambda string : self.ask_about_new_game()
+            self.label_game_info["text"] = self.game.winer + " won!"
+
+    def ask_about_new_game(self):
+        answer = messagebox.askyesno("game over", self.game.winer + " won!" + \
+            " Do you want start new game?")
+        if answer:
+            self.start_new()
 
     def make_move(self, string):
-        self.label_game_info["text"] = "your move: \"{}\"".format(string)
         try:
             self.game.commit_game_move(string)
         except ValueError as msg:
