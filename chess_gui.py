@@ -77,7 +77,7 @@ class ChessBoard(ttk.Frame):
                     background = "grey"
                 else:
                     background = "white"
-                field = ChessField(root, font=font, background=background,
+                field = ChessField(self, font=font, background=background,
                     anchor=anchor)
                 field.bind("<ButtonRelease>", self.touch_figure)
                 field.grid(in_=self, row=ir, column=ic, sticky=sticky)
