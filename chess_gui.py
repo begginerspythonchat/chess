@@ -4,7 +4,7 @@ import tkinter
 from tkinter import ttk
 from tkinter import messagebox
 
-from chess_console import Game
+from chess import Game
 from functions import get_cordinats
 
 
